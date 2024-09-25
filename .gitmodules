@@ -1,0 +1,3 @@
+[submodule "src/PixelEngine"]
+	path = src/PixelEngine
+	url = git@github.com:benapetr/PixelEngine
