@@ -46,6 +46,7 @@ BUILD=release
 HAS_PREFIX=0
 PREFIX=""
 BUILD_CHANGED=0
+QT6=0
 if [ x"$*" != x ];then
     echo "Options used: $*"
 fi
@@ -59,6 +60,7 @@ do
         echo " --disable-dependency-tracking: skip all package checks"
         echo " --extension: will build all extensions as well"
         echo " --unit-test: will build unit tests"
+        echo " --qt6: build with Qt6"
         echo " --qtpath: path to Qt (for example C:\\Qt\\5.4\\mingw\\"
         echo " --profiler: enable profiler"
         echo " --prefix: specify prefix for installation path"
@@ -128,6 +130,11 @@ do
     fi
     if [ "$var" = "--profiler" ];then
         PROFILER=' -DGRUMPY_PROFILER=true'
+        continue
+    fi
+    if [ "$var" = "--qt6" ];then
+        QT5=0
+        QT6=1
         continue
     fi
 done
@@ -239,15 +246,10 @@ if [ -d "../.git" ];then
     git submodule update
 fi
 
-if [ "$QT5" -eq 10 ];then
-    QT5=1
-    echo $WARN"WARNING: No version of QT was explicitly specified, assuming you want to use QT5 (use --qt4 if not)"$NORMAL
-fi
-
 if [ "$QT5" -eq 1 ];then
     CMAKE_ARGS="$CMAKE_ARGS -DQT5_BUILD=true"
 else
-    CMAKE_ARGS="$CMAKE_ARGS -DQT5_BUILD=false"
+    CMAKE_ARGS="$CMAKE_ARGS -DQT5_BUILD=false -DQT6_BUILD=true"
 fi
 
 #text "Executing update.sh... "

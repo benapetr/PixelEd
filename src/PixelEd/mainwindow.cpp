@@ -23,7 +23,6 @@
 #include <QKeyEvent>
 #include <QDateTime>
 #include <QImage>
-#include <QDesktopWidget>
 #include <QLayout>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"

@@ -19,9 +19,16 @@ endif()
 
 # Settings
 option(QT5_BUILD "Build with Qt5" true)
+option(QT6_BUILD "Build with Qt6" false)
 option(EXTREME_DEBUG "Enable some resource expensive and slowing debug info" false)
 option(UNIT_TESTS "Enable unit tests" false)
 option(OPENGL "Use OpenGL as default rendering engine" true)
+
+if (QT6_BUILD)
+    set (QT5_BUILD false)
+    add_definitions( -DQT6_BUILD )
+    set(CMAKE_OSX_DEPLOYMENT_TARGET "10.15" CACHE STRING "Minimum OS X deployment version" FORCE)
+endif()
 
 # Configuration
 if (UNIT_TESTS)
