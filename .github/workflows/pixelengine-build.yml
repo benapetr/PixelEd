@@ -1,0 +1,85 @@
+name: PixelEngine Build
+
+on:
+  push:
+    paths:
+      - ".github/workflows/pixelengine-build.yml"
+      - "src/CMakeLists.txt"
+      - "src/PixelEngine/**"
+  pull_request:
+    paths:
+      - ".github/workflows/pixelengine-build.yml"
+      - "src/CMakeLists.txt"
+      - "src/PixelEngine/**"
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: ${{ matrix.os }} / Qt ${{ matrix.qt-major }}
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-22.04
+            qt-major: 5
+            qt-version: "5.15.2"
+            qt-modules: ""
+            qt-cmake-args: "-DQT5_BUILD=ON -DQT6_BUILD=OFF"
+          - os: ubuntu-22.04
+            qt-major: 6
+            qt-version: "6.8.3"
+            qt-modules: "qtdeclarative"
+            qt-cmake-args: "-DQT5_BUILD=OFF -DQT6_BUILD=ON"
+          - os: macos-13
+            qt-major: 5
+            qt-version: "5.15.2"
+            qt-modules: ""
+            qt-cmake-args: "-DQT5_BUILD=ON -DQT6_BUILD=OFF"
+          - os: macos-13
+            qt-major: 6
+            qt-version: "6.8.3"
+            qt-modules: "qtdeclarative"
+            qt-cmake-args: "-DQT5_BUILD=OFF -DQT6_BUILD=ON"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install Linux build tools
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake ninja-build libgl1-mesa-dev
+
+      - name: Install macOS build tools
+        if: runner.os == 'macOS'
+        run: brew install ninja
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: ${{ matrix.qt-version }}
+          modules: ${{ matrix.qt-modules }}
+          cache: true
+
+      - name: Configure PixelEngine
+        run: >
+          cmake
+          -S src/PixelEngine/src/PixelEngine
+          -B build/pixelengine-${{ matrix.os }}-qt${{ matrix.qt-major }}
+          -G Ninja
+          -DCMAKE_BUILD_TYPE=Release
+          -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+          -DUNIT_TESTS=OFF
+          ${{ matrix.qt-cmake-args }}
+
+      - name: Build PixelEngine
+        run: >
+          cmake
+          --build build/pixelengine-${{ matrix.os }}-qt${{ matrix.qt-major }}
+          --target pixelengine
+          --parallel
