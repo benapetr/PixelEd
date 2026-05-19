@@ -30,7 +30,7 @@ jobs:
           - os: ubuntu-22.04
             qt-major: 6
             qt-version: "6.8.3"
-            qt-modules: "qtdeclarative"
+            qt-modules: ""
             qt-cmake-args: "-DQT5_BUILD=OFF -DQT6_BUILD=ON"
           - os: macos-13
             qt-major: 5
@@ -40,7 +40,7 @@ jobs:
           - os: macos-13
             qt-major: 6
             qt-version: "6.8.3"
-            qt-modules: "qtdeclarative"
+            qt-modules: ""
             qt-cmake-args: "-DQT5_BUILD=OFF -DQT6_BUILD=ON"
 
     steps:
