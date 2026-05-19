@@ -26,21 +26,25 @@ jobs:
             qt-major: 5
             qt-version: "5.15.2"
             qt-modules: ""
+            cxx-standard: 11
             qt-cmake-args: "-DQT5_BUILD=ON -DQT6_BUILD=OFF"
           - os: ubuntu-22.04
             qt-major: 6
             qt-version: "6.8.3"
             qt-modules: ""
+            cxx-standard: 17
             qt-cmake-args: "-DQT5_BUILD=OFF -DQT6_BUILD=ON"
           - os: macos-13
             qt-major: 5
             qt-version: "5.15.2"
             qt-modules: ""
+            cxx-standard: 11
             qt-cmake-args: "-DQT5_BUILD=ON -DQT6_BUILD=OFF"
           - os: macos-13
             qt-major: 6
             qt-version: "6.8.3"
             qt-modules: ""
+            cxx-standard: 17
             qt-cmake-args: "-DQT5_BUILD=OFF -DQT6_BUILD=ON"
 
     steps:
@@ -73,6 +77,8 @@ jobs:
           -B build/pixelengine-${{ matrix.os }}-qt${{ matrix.qt-major }}
           -G Ninja
           -DCMAKE_BUILD_TYPE=Release
+          -DCMAKE_CXX_STANDARD=${{ matrix.cxx-standard }}
+          -DCMAKE_CXX_STANDARD_REQUIRED=ON
           -DCMAKE_POLICY_VERSION_MINIMUM=3.5
           -DUNIT_TESTS=OFF
           ${{ matrix.qt-cmake-args }}
